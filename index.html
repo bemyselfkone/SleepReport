@@ -28,6 +28,24 @@
 
         <main class="main-content">
             <form id="sleepForm" class="sleep-form">
+                <!-- レポートタイプ選択 -->
+                <section class="form-section">
+                    <h2 class="section-title">📋 レポートタイプ</h2>
+                    <div class="form-group">
+                        <label>レポート種類</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="reportType" value="夜の報告" checked>
+                                <span>夜の報告</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="reportType" value="朝の報告">
+                                <span>朝の報告</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- 日付 -->
                 <section class="form-section">
                     <h2 class="section-title">📅 基本情報</h2>
@@ -37,386 +55,569 @@
                     </div>
                 </section>
 
-                <!-- 起床・昼寝 -->
-                <section class="form-section">
-                    <h2 class="section-title">☀️ 起床・昼寝</h2>
-                    <div class="form-group">
-                        <label for="wakeTime">今日の起床時刻</label>
-                        <input type="time" id="wakeTime" name="wakeTime" value="05:00">
-                    </div>
-                    <div class="form-group">
-                        <label>昼寝</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="nap" value="なし">
-                                <span>なし</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="nap" value="あり" checked>
-                                <span>あり</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="napDetails" class="nested-group">
+                <!-- 朝の報告専用セクション -->
+                <div id="morningReportSections" class="hidden">
+                    <!-- 睡眠画像 -->
+                    <section class="form-section">
+                        <h2 class="section-title">📊 睡眠画像</h2>
                         <div class="form-group">
-                            <label for="napTime">時刻</label>
-                            <input type="text" id="napTime" name="napTime" value="12時頃">
-                        </div>
-                        <div class="form-group">
-                            <label for="napDuration">時間</label>
-                            <input type="number" id="napDuration" name="napDuration" value="20">
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 運動 -->
-                <section class="form-section">
-                    <h2 class="section-title">🏃 運動</h2>
-                    <div class="form-group">
-                        <label>運動</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="exercise" value="なし" checked>
-                                <span>なし</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="exercise" value="あり">
-                                <span>あり</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="exerciseDetails" class="nested-group hidden">
-                        <div class="form-group">
-                            <label for="exerciseTime">時刻</label>
-                            <input type="time" id="exerciseTime" name="exerciseTime">
-                        </div>
-                        <div class="form-group">
-                            <label for="exerciseContent">内容</label>
-                            <input type="text" id="exerciseContent" name="exerciseContent">
-                        </div>
-                        <div class="form-group">
-                            <label>強度</label>
+                            <label>スリープコイン</label>
                             <div class="radio-group">
                                 <label class="radio-label">
-                                    <input type="radio" name="exerciseIntensity" value="軽">
-                                    <span>軽</span>
+                                    <input type="radio" name="sleepCoin" value="あり" checked>
+                                    <span>あり</span>
                                 </label>
                                 <label class="radio-label">
-                                    <input type="radio" name="exerciseIntensity" value="中">
-                                    <span>中</span>
+                                    <input type="radio" name="sleepCoin" value="なし">
+                                    <span>なし</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>スマートバンド</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="smartBand" value="あり" checked>
+                                    <span>あり</span>
                                 </label>
                                 <label class="radio-label">
-                                    <input type="radio" name="exerciseIntensity" value="強">
+                                    <input type="radio" name="smartBand" value="なし">
+                                    <span>なし</span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 起床 -->
+                    <section class="form-section">
+                        <h2 class="section-title">⏰ 起床</h2>
+                        <div class="form-group">
+                            <label for="morningWakeTime">時刻</label>
+                            <input type="time" id="morningWakeTime" name="morningWakeTime" value="05:00">
+                        </div>
+                    </section>
+
+                    <!-- 途中覚醒 -->
+                    <section class="form-section">
+                        <h2 class="section-title">😴 途中覚醒</h2>
+                        <div class="form-group">
+                            <label>途中覚醒</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="nightWaking" value="なし" checked>
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="nightWaking" value="あり">
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="nightWakingDetails" class="nested-group hidden">
+                            <div class="form-group">
+                                <label for="nightWakingTime">時刻</label>
+                                <input type="time" id="nightWakingTime" name="nightWakingTime" value="04:00">
+                            </div>
+                            <div class="form-group">
+                                <label for="nightWakingCount">回数</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="nightWakingCount" name="nightWakingCount" value="1">
+                                    <span class="unit">回</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 起床時環境 -->
+                    <section class="form-section">
+                        <h2 class="section-title">🌡️ 起床時環境</h2>
+                        <div class="form-group">
+                            <label for="morningRoomTemp">室温</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="morningRoomTemp" name="morningRoomTemp" value="19">
+                                <span class="unit">℃</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="morningHumidity">湿度</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="morningHumidity" name="morningHumidity" value="50">
+                                <span class="unit">%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>体感</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="morningComfort" value="寒">
+                                    <span>寒</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="morningComfort" value="丁度" checked>
+                                    <span>丁度</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="morningComfort" value="暑">
+                                    <span>暑</span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 起床体感 -->
+                    <section class="form-section">
+                        <h2 class="section-title">💭 起床体感</h2>
+                        <div class="form-group">
+                            <label>目覚め</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="wakeFeeling" value="目覚まし">
+                                    <span>目覚まし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="wakeFeeling" value="自然" checked>
+                                    <span>自然</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>頭</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="morningHeadState" value="スッキリ">
+                                    <span>スッキリ</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="morningHeadState" value="普" checked>
+                                    <span>普</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="morningHeadState" value="ぼ">
+                                    <span>ぼ</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>だるさ</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="fatigue" value="なし" checked>
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="fatigue" value="少">
+                                    <span>少</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="fatigue" value="強">
                                     <span>強</span>
                                 </label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="afterExercise">終了後</label>
-                            <input type="text" id="afterExercise" name="afterExercise" value="普通">
+                            <label>眠気残り</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="remainingSleepiness" value="なし" checked>
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="remainingSleepiness" value="少">
+                                    <span>少</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="remainingSleepiness" value="強">
+                                    <span>強</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
 
-                <!-- 夕食 -->
-                <section class="form-section">
-                    <h2 class="section-title">🍽️ 食事</h2>
-                    <div class="form-group">
-                        <label for="dinnerTime">夕食時刻</label>
-                        <input type="time" id="dinnerTime" name="dinnerTime" value="16:00">
-                    </div>
-                    <div class="form-group">
-                        <label for="dinnerContent">内容</label>
-                        <input type="text" id="dinnerContent" name="dinnerContent" value="大きいおにぎり">
-                    </div>
-                    <div class="form-group">
-                        <label>就寝3時間以内の飲食</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="lateSnack" value="なし">
-                                <span>なし</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="lateSnack" value="あり" checked>
-                                <span>あり</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="lateSnackDetails" class="nested-group">
-                        <div class="form-group">
-                            <label for="lateSnackContent">内容</label>
-                            <input type="text" id="lateSnackContent" name="lateSnackContent"
-                                value="ミニインスタントラーメン、プロテイン、チーズ">
-                        </div>
-                    </div>
-                </section>
+                <!-- 夜の報告専用セクション -->
+                <div id="nightReportSections">
 
-                <!-- 入浴 -->
-                <section class="form-section">
-                    <h2 class="section-title">🛁 入浴</h2>
-                    <div class="form-group">
-                        <label>入浴タイプ</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="bathType" value="入浴" checked>
-                                <span>入浴</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="bathType" value="シャワー">
-                                <span>シャワー</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="bathTime">時刻</label>
-                        <input type="time" id="bathTime" name="bathTime" value="19:45">
-                    </div>
-                    <div id="bathDetails" class="nested-group">
+                    <!-- 起床・昼寝 -->
+                    <section class="form-section">
+                        <h2 class="section-title">☀️ 起床・昼寝</h2>
                         <div class="form-group">
-                            <label for="bathTemp">湯温</label>
+                            <label for="wakeTime">今日の起床時刻</label>
+                            <input type="time" id="wakeTime" name="wakeTime" value="05:00">
+                        </div>
+                        <div class="form-group">
+                            <label>昼寝</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="nap" value="なし">
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="nap" value="あり" checked>
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="napDetails" class="nested-group">
+                            <div class="form-group">
+                                <label for="napTime">時刻</label>
+                                <input type="text" id="napTime" name="napTime" value="12時頃">
+                            </div>
+                            <div class="form-group">
+                                <label for="napDuration">時間</label>
+                                <input type="number" id="napDuration" name="napDuration" value="20">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 運動 -->
+                    <section class="form-section">
+                        <h2 class="section-title">🏃 運動</h2>
+                        <div class="form-group">
+                            <label>運動</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="exercise" value="なし" checked>
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="exercise" value="あり">
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="exerciseDetails" class="nested-group hidden">
+                            <div class="form-group">
+                                <label for="exerciseTime">時刻</label>
+                                <input type="time" id="exerciseTime" name="exerciseTime">
+                            </div>
+                            <div class="form-group">
+                                <label for="exerciseContent">内容</label>
+                                <input type="text" id="exerciseContent" name="exerciseContent">
+                            </div>
+                            <div class="form-group">
+                                <label>強度</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="exerciseIntensity" value="軽">
+                                        <span>軽</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="exerciseIntensity" value="中">
+                                        <span>中</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="exerciseIntensity" value="強">
+                                        <span>強</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="afterExercise">終了後</label>
+                                <input type="text" id="afterExercise" name="afterExercise" value="普通">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 夕食 -->
+                    <section class="form-section">
+                        <h2 class="section-title">🍽️ 食事</h2>
+                        <div class="form-group">
+                            <label for="dinnerTime">夕食時刻</label>
+                            <input type="time" id="dinnerTime" name="dinnerTime" value="16:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="dinnerContent">内容</label>
+                            <input type="text" id="dinnerContent" name="dinnerContent" value="大きいおにぎり">
+                        </div>
+                        <div class="form-group">
+                            <label>就寝3時間以内の飲食</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="lateSnack" value="なし">
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="lateSnack" value="あり" checked>
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="lateSnackDetails" class="nested-group">
+                            <div class="form-group">
+                                <label for="lateSnackContent">内容</label>
+                                <input type="text" id="lateSnackContent" name="lateSnackContent"
+                                    value="ミニインスタントラーメン、プロテイン、チーズ">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 入浴 -->
+                    <section class="form-section">
+                        <h2 class="section-title">🛁 入浴</h2>
+                        <div class="form-group">
+                            <label>入浴タイプ</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="bathType" value="入浴" checked>
+                                    <span>入浴</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="bathType" value="シャワー">
+                                    <span>シャワー</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bathTime">時刻</label>
+                            <input type="time" id="bathTime" name="bathTime" value="19:45">
+                        </div>
+                        <div id="bathDetails" class="nested-group">
+                            <div class="form-group">
+                                <label for="bathTemp">湯温</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="bathTemp" name="bathTemp" value="41">
+                                    <span class="unit">℃</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bathDuration">時間</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="bathDuration" name="bathDuration" value="15">
+                                    <span class="unit">分</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bathActivity">入浴中の行動</label>
+                                <input type="text" id="bathActivity" name="bathActivity" value="スマホでテレビ">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 就寝前行動 -->
+                    <section class="form-section">
+                        <h2 class="section-title">🌆 就寝前行動</h2>
+                        <div class="form-group">
+                            <label>TV・動画</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="tvVideo" value="なし" checked>
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="tvVideo" value="あり">
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="tvVideoDetails" class="nested-group hidden">
+                            <div class="form-group">
+                                <label for="tvVideoContent">内容</label>
+                                <input type="text" id="tvVideoContent" name="tvVideoContent">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>読書</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="reading" value="なし">
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="reading" value="あり" checked>
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="readingDetails" class="nested-group">
+                            <div class="form-group">
+                                <label for="readingContent">内容</label>
+                                <input type="text" id="readingContent" name="readingContent" value="小説">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>ゆたぽん（首用）</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="yutapon" value="使用なし">
+                                    <span>使用なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="yutapon" value="使用あり" checked>
+                                    <span>使用あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="yutaponDetails" class="nested-group">
+                            <div class="form-group">
+                                <label for="yutaponDuration">使用時間</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="yutaponDuration" name="yutaponDuration" value="15">
+                                    <span class="unit">分</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>ストレッチ</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="stretch" value="なし">
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="stretch" value="あり" checked>
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="stretchDetails" class="nested-group">
+                            <div class="form-group">
+                                <label for="stretchType">種類</label>
+                                <input type="text" id="stretchType" name="stretchType" value="YouTube寝る前ストレッチ（音だけ）">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 寝室環境 -->
+                    <section class="form-section">
+                        <h2 class="section-title">🏠 寝室環境</h2>
+                        <div class="form-group">
+                            <label for="acTemp">エアコン（暖房）</label>
                             <div class="input-with-unit">
-                                <input type="number" id="bathTemp" name="bathTemp" value="41">
+                                <input type="number" id="acTemp" name="acTemp" value="19">
                                 <span class="unit">℃</span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="bathDuration">時間</label>
-                            <div class="input-with-unit">
-                                <input type="number" id="bathDuration" name="bathDuration" value="15">
-                                <span class="unit">分</span>
+                            <label for="humidifier">加湿器</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="humidifier" value="なし">
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="humidifier" value="あり" checked>
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="humidifierDetails" class="nested-group">
+                            <div class="form-group">
+                                <label for="humidity">湿度</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="humidity" name="humidity" value="55">
+                                    <span class="unit">%</span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="bathActivity">入浴中の行動</label>
-                            <input type="text" id="bathActivity" name="bathActivity" value="スマホでテレビ">
+                            <label for="bedding">布団</label>
+                            <input type="text" id="bedding" name="bedding" value="夏用羽毛">
                         </div>
-                    </div>
-                </section>
-
-                <!-- 就寝前行動 -->
-                <section class="form-section">
-                    <h2 class="section-title">🌆 就寝前行動</h2>
-                    <div class="form-group">
-                        <label>TV・動画</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="tvVideo" value="なし" checked>
-                                <span>なし</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="tvVideo" value="あり">
-                                <span>あり</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="tvVideoDetails" class="nested-group hidden">
                         <div class="form-group">
-                            <label for="tvVideoContent">内容</label>
-                            <input type="text" id="tvVideoContent" name="tvVideoContent">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>読書</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="reading" value="なし">
-                                <span>なし</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="reading" value="あり" checked>
-                                <span>あり</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="readingDetails" class="nested-group">
-                        <div class="form-group">
-                            <label for="readingContent">内容</label>
-                            <input type="text" id="readingContent" name="readingContent" value="小説">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>ゆたぽん（首用）</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="yutapon" value="使用なし">
-                                <span>使用なし</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="yutapon" value="使用あり" checked>
-                                <span>使用あり</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="yutaponDetails" class="nested-group">
-                        <div class="form-group">
-                            <label for="yutaponDuration">使用時間</label>
-                            <div class="input-with-unit">
-                                <input type="number" id="yutaponDuration" name="yutaponDuration" value="15">
-                                <span class="unit">分</span>
+                            <label>体感</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="comfort" value="寒">
+                                    <span>寒</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="comfort" value="丁度" checked>
+                                    <span>丁度</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="comfort" value="暑">
+                                    <span>暑</span>
+                                </label>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>ストレッチ</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="stretch" value="なし">
-                                <span>なし</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="stretch" value="あり" checked>
-                                <span>あり</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="stretchDetails" class="nested-group">
-                        <div class="form-group">
-                            <label for="stretchType">種類</label>
-                            <input type="text" id="stretchType" name="stretchType" value="YouTube寝る前ストレッチ（音だけ）">
-                        </div>
-                    </div>
-                </section>
+                    </section>
 
-                <!-- 寝室環境 -->
-                <section class="form-section">
-                    <h2 class="section-title">🏠 寝室環境</h2>
-                    <div class="form-group">
-                        <label for="acTemp">エアコン（暖房）</label>
-                        <div class="input-with-unit">
-                            <input type="number" id="acTemp" name="acTemp" value="19">
-                            <span class="unit">℃</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="humidifier">加湿器</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="humidifier" value="なし">
-                                <span>なし</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="humidifier" value="あり" checked>
-                                <span>あり</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="humidifierDetails" class="nested-group">
+                    <!-- 今の状態 -->
+                    <section class="form-section">
+                        <h2 class="section-title">💭 今の状態</h2>
                         <div class="form-group">
-                            <label for="humidity">湿度</label>
-                            <div class="input-with-unit">
-                                <input type="number" id="humidity" name="humidity" value="55">
-                                <span class="unit">%</span>
+                            <label>眠気</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="sleepiness" value="強">
+                                    <span>強</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="sleepiness" value="普" checked>
+                                    <span>普</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="sleepiness" value="弱">
+                                    <span>弱</span>
+                                </label>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="bedding">布団</label>
-                        <input type="text" id="bedding" name="bedding" value="夏用羽毛">
-                    </div>
-                    <div class="form-group">
-                        <label>体感</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="comfort" value="寒">
-                                <span>寒</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="comfort" value="丁度" checked>
-                                <span>丁度</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="comfort" value="暑">
-                                <span>暑</span>
-                            </label>
+                        <div class="form-group">
+                            <label>頭</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="headState" value="冴">
+                                    <span>冴</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="headState" value="普" checked>
+                                    <span>普</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="headState" value="ぼ">
+                                    <span>ぼ</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                </section>
+                        <div class="form-group">
+                            <label>体の緊張</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="tension" value="低" checked>
+                                    <span>低</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="tension" value="中">
+                                    <span>中</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="tension" value="高">
+                                    <span>高</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>ストレス</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="stress" value="低" checked>
+                                    <span>低</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="stress" value="中">
+                                    <span>中</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="stress" value="高">
+                                    <span>高</span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
 
-                <!-- 今の状態 -->
-                <section class="form-section">
-                    <h2 class="section-title">💭 今の状態</h2>
-                    <div class="form-group">
-                        <label>眠気</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="sleepiness" value="強">
-                                <span>強</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="sleepiness" value="普" checked>
-                                <span>普</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="sleepiness" value="弱">
-                                <span>弱</span>
-                            </label>
+                    <!-- 就寝予定・メモ -->
+                    <section class="form-section">
+                        <h2 class="section-title">📝 その他</h2>
+                        <div class="form-group">
+                            <label for="bedTime">就寝予定時刻</label>
+                            <input type="time" id="bedTime" name="bedTime" value="22:00">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>頭</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="headState" value="冴">
-                                <span>冴</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="headState" value="普" checked>
-                                <span>普</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="headState" value="ぼ">
-                                <span>ぼ</span>
-                            </label>
+                        <div class="form-group">
+                            <label for="memo">メモ</label>
+                            <textarea id="memo" name="memo" rows="4"></textarea>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>体の緊張</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="tension" value="低" checked>
-                                <span>低</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="tension" value="中">
-                                <span>中</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="tension" value="高">
-                                <span>高</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>ストレス</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="stress" value="低" checked>
-                                <span>低</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="stress" value="中">
-                                <span>中</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="stress" value="高">
-                                <span>高</span>
-                            </label>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 就寝予定・メモ -->
-                <section class="form-section">
-                    <h2 class="section-title">📝 その他</h2>
-                    <div class="form-group">
-                        <label for="bedTime">就寝予定時刻</label>
-                        <input type="time" id="bedTime" name="bedTime" value="22:00">
-                    </div>
-                    <div class="form-group">
-                        <label for="memo">メモ</label>
-                        <textarea id="memo" name="memo" rows="4"></textarea>
-                    </div>
-                </section>
+                    </section>
+                </div>
 
                 <button type="submit" class="submit-btn">
                     <span class="btn-icon">✨</span>
