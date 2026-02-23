@@ -136,16 +136,53 @@ document.querySelectorAll('input[name="reportType"]').forEach(radio => {
     });
 });
 
-// Night waking toggle
-const nightWakingDetails = document.getElementById('nightWakingDetails');
-document.querySelectorAll('input[name="nightWaking"]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-        if (e.target.value === 'あり') {
-            nightWakingDetails.classList.remove('hidden');
-        } else {
-            nightWakingDetails.classList.add('hidden');
-        }
-    });
+// Night waking dynamic forms
+const nightWakingCountInput = document.getElementById('nightWakingCount');
+const nightWakingDetailsContainer = document.getElementById('nightWakingDetailsContainer');
+
+nightWakingCountInput.addEventListener('change', (e) => {
+    const count = parseInt(e.target.value) || 0;
+    nightWakingDetailsContainer.innerHTML = ''; // Clear existing forms
+
+    for (let i = 1; i <= count; i++) {
+        const formGroup = document.createElement('div');
+        formGroup.className = 'nested-group';
+        formGroup.style.marginBottom = '1rem';
+        formGroup.style.padding = '1rem';
+        formGroup.style.background = 'rgba(255, 255, 255, 0.03)';
+        formGroup.style.borderRadius = '8px';
+
+        formGroup.innerHTML = `
+            <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #a4b0be;">${i}回目</h4>
+            <div class="form-group">
+                <label for="nightWakingTime${i}">時刻</label>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <input type="time" id="nightWakingTime${i}" name="nightWakingTime${i}">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; color: #a4b0be; font-size: 0.9rem; cursor: pointer;">
+                        <input type="checkbox" id="nightWakingUnknown${i}" name="nightWakingUnknown${i}" value="不明">
+                        時刻不明
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="nightWakingMethod${i}">再入眠の難度と手段</label>
+                <div class="radio-group" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+                    <label class="radio-label"><input type="radio" name="nightWakingMethod${i}" value="すぐ" checked><span>すぐ</span></label>
+                    <label class="radio-label"><input type="radio" name="nightWakingMethod${i}" value="１０分以上"><span>１０分以上</span></label>
+                    <label class="radio-label"><input type="radio" name="nightWakingMethod${i}" value="ラジオ等を聞いた後"><span>ラジオ等を聞いた後</span></label>
+                </div>
+            </div>
+        `;
+        nightWakingDetailsContainer.appendChild(formGroup);
+
+        // Disable time input if "Unknown" is checked
+        const unknownCheck = document.getElementById(`nightWakingUnknown${i}`);
+        const timeInput = document.getElementById(`nightWakingTime${i}`);
+        unknownCheck.addEventListener('change', (e) => {
+            timeInput.disabled = e.target.checked;
+            if (e.target.checked) timeInput.value = '';
+        });
+    }
 });
 
 // ==================== //
@@ -199,11 +236,19 @@ function generateMorningSummary(data) {
     summary += `起床：時刻 ${data.morningWakeTime || ''}\n`;
 
     // Night waking
-    if (data.nightWaking === 'あり') {
-        summary += `途中覚醒：あり（時刻 ${data.nightWakingTime || ''}・回数${data.nightWakingCount || ''}回）\n`;
-    } else {
-        summary += `途中覚醒：なし\n`;
+    const wakingCount = parseInt(data.nightWakingCount) || 0;
+    summary += `途中覚醒：回数（${wakingCount}）回\n`;
+    if (wakingCount > 0) {
+        for (let i = 1; i <= wakingCount; i++) {
+            const time = data[`nightWakingUnknown${i}`] ? '不明' : (data[`nightWakingTime${i}`] || '');
+            const method = data[`nightWakingMethod${i}`] || '';
+            const prefix = i === 1 ? '　　　　　　ある場合：' : '　　　　　　　　　　　';
+            summary += `${prefix}時刻 ${time}、再入眠の難度と手段（${method}）\n`;
+        }
     }
+
+    // Heat countermeasures
+    summary += `放熱対策：昨夜の工夫（${data.heatCountermeasure || ''}）\n`;
 
     // Morning environment
     summary += `起床時環境：室温：${data.morningRoomTemp || ''}℃／湿度：${data.morningHumidity || ''}％／体感：${data.morningComfort || ''}\n`;
@@ -228,6 +273,10 @@ function generateNightSummary(data) {
     }
     summary += `日付：${dateStr}\n`;
 
+    // Next morning alarm and daytime sleepiness
+    summary += `翌朝のアラーム：${data.nextMorningAlarm || ''}\n`;
+    summary += `昼の眠気の強さ：${data.daytimeSleepiness || ''}\n`;
+
     // Wake time and nap
     summary += `今日の起床時刻：${data.wakeTime || ''}`;
     if (data.nap === 'あり') {
@@ -244,8 +293,10 @@ function generateNightSummary(data) {
         summary += `運動：なし\n`;
     }
 
-    // Dinner
-    summary += `夕食：時刻：${data.dinnerTime || ''}／内容：${data.dinnerContent || ''}\n`;
+    // Dinner and Hydration
+    summary += `夕食：内容（${data.dinnerContent || ''}）、時刻（${data.dinnerTime || ''}）、食事時間（${data.dinnerDuration || ''}）分\n`;
+    summary += `カフェイン（14時以降）・アルコールの有無：${data.caffeineAlcohol || ''}\n`;
+    summary += `水分補給：夕食後の量（${data.hydration || ''}）ml\n`;
 
     // Late snack
     if (data.lateSnack === 'あり') {
@@ -260,6 +311,11 @@ function generateNightSummary(data) {
     } else {
         summary += `入浴：シャワー／時刻：${data.bathTime || ''}\n`;
     }
+
+    // Digital use and aroma
+    summary += `直近2hのデジタル使用：${data.digitalUse || ''}分\n`;
+    summary += `報告前のオフ時間：${data.offTime || ''}分\n`;
+    summary += `アロマ：${data.aroma || ''}\n`;
 
     // Pre-sleep activities - TV/Video
     if (data.tvVideo === 'あり') {
@@ -404,8 +460,40 @@ const setCurrentDate = () => {
     dateInput.value = `${year}-${month}-${day}`;
 };
 
+// Initialize dynamic select options
+const initializeSelectOptions = () => {
+    // Duration selects (5 min intervals)
+    document.querySelectorAll('.duration-select').forEach(select => {
+        const defaultVal = parseInt(select.dataset.default) || 0;
+        const maxVal = parseInt(select.dataset.max) || 120;
+
+        for (let i = 0; i <= maxVal; i += 5) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            if (i === defaultVal) option.selected = true;
+            select.appendChild(option);
+        }
+    });
+
+    // Hydration selects (50 ml intervals)
+    document.querySelectorAll('.hydration-select').forEach(select => {
+        const defaultVal = parseInt(select.dataset.default) || 200;
+        const maxVal = parseInt(select.dataset.max) || 1000;
+
+        for (let i = 0; i <= maxVal; i += 50) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            if (i === defaultVal) option.selected = true;
+            select.appendChild(option);
+        }
+    });
+};
+
 // Load saved data on page load
 window.addEventListener('load', () => {
+    initializeSelectOptions();
     setCurrentDate();
     loadFormData();
 });

@@ -101,30 +101,35 @@
                     <section class="form-section">
                         <h2 class="section-title">😴 途中覚醒</h2>
                         <div class="form-group">
-                            <label>途中覚醒</label>
-                            <div class="radio-group">
-                                <label class="radio-label">
-                                    <input type="radio" name="nightWaking" value="なし" checked>
-                                    <span>なし</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="nightWaking" value="あり">
-                                    <span>あり</span>
-                                </label>
+                            <label for="nightWakingCount">回数</label>
+                            <div class="input-with-unit">
+                                <select id="nightWakingCount" name="nightWakingCount">
+                                    <option value="0" selected>0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                                <span class="unit">回</span>
                             </div>
                         </div>
-                        <div id="nightWakingDetails" class="nested-group hidden">
-                            <div class="form-group">
-                                <label for="nightWakingTime">時刻</label>
-                                <input type="time" id="nightWakingTime" name="nightWakingTime" value="04:00">
-                            </div>
-                            <div class="form-group">
-                                <label for="nightWakingCount">回数</label>
-                                <div class="input-with-unit">
-                                    <input type="number" id="nightWakingCount" name="nightWakingCount" value="1">
-                                    <span class="unit">回</span>
-                                </div>
-                            </div>
+                        <div id="nightWakingDetailsContainer">
+                            <!-- 動的に追加入力フォームが生成されます -->
+                        </div>
+                    </section>
+
+                    <!-- 放熱対策 -->
+                    <section class="form-section">
+                        <h2 class="section-title">❄️ 放熱対策</h2>
+                        <div class="form-group">
+                            <label for="heatCountermeasure">昨夜の工夫</label>
+                            <input type="text" id="heatCountermeasure" name="heatCountermeasure">
                         </div>
                     </section>
 
@@ -241,8 +246,29 @@
                     <section class="form-section">
                         <h2 class="section-title">☀️ 起床・昼寝</h2>
                         <div class="form-group">
+                            <label for="nextMorningAlarm">翌朝のアラーム</label>
+                            <input type="time" id="nextMorningAlarm" name="nextMorningAlarm" value="05:00">
+                        </div>
+                        <div class="form-group">
                             <label for="wakeTime">今日の起床時刻</label>
                             <input type="time" id="wakeTime" name="wakeTime" value="05:00">
+                        </div>
+                        <div class="form-group">
+                            <label>昼の眠気の強さ</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="daytimeSleepiness" value="なし" checked>
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="daytimeSleepiness" value="弱">
+                                    <span>弱</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="daytimeSleepiness" value="強">
+                                    <span>強</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>昼寝</label>
@@ -264,7 +290,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="napDuration">時間</label>
-                                <input type="number" id="napDuration" name="napDuration" value="20">
+                                <div class="input-with-unit">
+                                    <select id="napDuration" name="napDuration" class="duration-select"
+                                        data-default="20" data-max="120"></select>
+                                    <span class="unit">分</span>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -322,12 +352,41 @@
                     <section class="form-section">
                         <h2 class="section-title">🍽️ 食事</h2>
                         <div class="form-group">
-                            <label for="dinnerTime">夕食時刻</label>
-                            <input type="time" id="dinnerTime" name="dinnerTime" value="16:00">
+                            <label for="dinnerContent">夕食内容</label>
+                            <input type="text" id="dinnerContent" name="dinnerContent">
                         </div>
                         <div class="form-group">
-                            <label for="dinnerContent">内容</label>
-                            <input type="text" id="dinnerContent" name="dinnerContent" value="大きいおにぎり">
+                            <label for="dinnerTime">夕食時刻</label>
+                            <input type="time" id="dinnerTime" name="dinnerTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="dinnerDuration">食事時間</label>
+                            <div class="input-with-unit">
+                                <select id="dinnerDuration" name="dinnerDuration" class="duration-select"
+                                    data-default="30" data-max="120"></select>
+                                <span class="unit">分</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>カフェイン（14時以降）・アルコールの有無</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="caffeineAlcohol" value="なし" checked>
+                                    <span>なし</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="caffeineAlcohol" value="あり">
+                                    <span>あり</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="hydration">水分補給（夕食後の量）</label>
+                            <div class="input-with-unit">
+                                <select id="hydration" name="hydration" class="hydration-select" data-default="200"
+                                    data-max="1000"></select>
+                                <span class="unit">ml</span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>就寝3時間以内の飲食</label>
@@ -382,7 +441,8 @@
                             <div class="form-group">
                                 <label for="bathDuration">時間</label>
                                 <div class="input-with-unit">
-                                    <input type="number" id="bathDuration" name="bathDuration" value="15">
+                                    <select id="bathDuration" name="bathDuration" class="duration-select"
+                                        data-default="15" data-max="120"></select>
                                     <span class="unit">分</span>
                                 </div>
                             </div>
@@ -396,6 +456,35 @@
                     <!-- 就寝前行動 -->
                     <section class="form-section">
                         <h2 class="section-title">🌆 就寝前行動</h2>
+                        <div class="form-group">
+                            <label for="digitalUse">直近2hのデジタル使用</label>
+                            <div class="input-with-unit">
+                                <select id="digitalUse" name="digitalUse" class="duration-select" data-default="0"
+                                    data-max="120"></select>
+                                <span class="unit">分</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="offTime">報告前のオフ時間</label>
+                            <div class="input-with-unit">
+                                <select id="offTime" name="offTime" class="duration-select" data-default="0"
+                                    data-max="120"></select>
+                                <span class="unit">分</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>アロマ</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="aroma" value="あり" checked>
+                                    <span>あり</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="aroma" value="なし">
+                                    <span>なし</span>
+                                </label>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label>TV・動画</label>
                             <div class="radio-group">
@@ -451,7 +540,8 @@
                             <div class="form-group">
                                 <label for="yutaponDuration">使用時間</label>
                                 <div class="input-with-unit">
-                                    <input type="number" id="yutaponDuration" name="yutaponDuration" value="15">
+                                    <select id="yutaponDuration" name="yutaponDuration" class="duration-select"
+                                        data-default="15" data-max="120"></select>
                                     <span class="unit">分</span>
                                 </div>
                             </div>
@@ -483,7 +573,7 @@
                         <div class="form-group">
                             <label for="acTemp">エアコン（暖房）</label>
                             <div class="input-with-unit">
-                                <input type="number" id="acTemp" name="acTemp" value="19">
+                                <input type="number" id="acTemp" name="acTemp" value="18">
                                 <span class="unit">℃</span>
                             </div>
                         </div>
