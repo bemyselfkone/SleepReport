@@ -121,6 +121,18 @@ document.querySelectorAll('input[name="bathType"]').forEach(radio => {
     });
 });
 
+// AC toggle
+const acDetails = document.getElementById('acDetails');
+document.querySelectorAll('input[name="ac"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        if (e.target.value === 'あり') {
+            acDetails.classList.remove('hidden');
+        } else {
+            acDetails.classList.add('hidden');
+        }
+    });
+});
+
 // Report type toggle
 const morningReportSections = document.getElementById('morningReportSections');
 const nightReportSections = document.getElementById('nightReportSections');
@@ -247,14 +259,9 @@ function generateMorningSummary(data) {
         }
     }
 
-    // Heat countermeasures
-    summary += `放熱対策：昨夜の工夫（${data.heatCountermeasure || ''}）\n`;
-
     // Morning environment
-    summary += `起床時環境：室温：${data.morningRoomTemp || ''}℃／湿度：${data.morningHumidity || ''}％／体感：${data.morningComfort || ''}\n`;
-
     // Morning feeling
-    summary += `起床体感：目覚め：${data.wakeFeeling || ''}／頭：${data.morningHeadState || ''}／だるさ：${data.fatigue || ''}／眠気残り：${data.remainingSleepiness || ''}\n`;
+    summary += `起床体感：体感：${data.morningComfort || ''}／目覚め：${data.wakeFeeling || ''}／頭：${data.morningHeadState || ''}／だるさ：${data.fatigue || ''}／眠気残り：${data.remainingSleepiness || ''}\n`;
 
     return summary;
 }
@@ -277,14 +284,12 @@ function generateNightSummary(data) {
     summary += `翌朝のアラーム：${data.nextMorningAlarm || ''}\n`;
     summary += `昼の眠気の強さ：${data.daytimeSleepiness || ''}\n`;
 
-    // Wake time and nap
-    summary += `今日の起床時刻：${data.wakeTime || ''}`;
+    // Wake time and nap (Wake time removed)
     if (data.nap === 'あり') {
-        summary += `／昼寝：あり（時刻 ${data.napTime || ''}・${data.napDuration || ''}分）`;
+        summary += `昼寝：あり（時刻 ${data.napTime || ''}・${data.napDuration || ''}分）\n`;
     } else {
-        summary += `／昼寝：なし`;
+        summary += `昼寝：なし\n`;
     }
-    summary += '\n';
 
     // Exercise
     if (data.exercise === 'あり') {
@@ -317,6 +322,14 @@ function generateNightSummary(data) {
     summary += `報告前のオフ時間：${data.offTime || ''}分\n`;
     summary += `アロマ：${data.aroma || ''}\n`;
 
+    // Pre-sleep activities
+    let preSleepActs = [];
+    if (data.hotEyeMask === 'あり') preSleepActs.push('ホットアイマスク');
+    if (data.icePack === 'あり') preSleepActs.push('アイスノン');
+    if (preSleepActs.length > 0) {
+        summary += `就寝前行動：追加アイテム（${preSleepActs.join('、')}）\n`;
+    }
+
     // Pre-sleep activities - TV/Video
     if (data.tvVideo === 'あり') {
         summary += `就寝前行動：TV・動画：あり（${data.tvVideoContent || ''}）`;
@@ -346,7 +359,12 @@ function generateNightSummary(data) {
     }
 
     // Bedroom environment
-    summary += `寝室環境：エアコン：暖房（${data.acTemp || ''}℃）`;
+    if (data.ac === 'あり') {
+        summary += `寝室環境：エアコン：暖房（あり・${data.acTemp || ''}℃）`;
+    } else {
+        summary += `寝室環境：エアコン：暖房（なし）`;
+    }
+
     if (data.humidifier === 'あり') {
         summary += `／加湿器：あり（${data.humidity || ''}％）`;
     } else {
@@ -413,42 +431,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // ==================== //
-// Form Auto-save (Optional)
+// Form Initialization
 // ==================== //
-
-// Save form data to localStorage on input
-const saveFormData = () => {
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-    localStorage.setItem('sleepTrackerData', JSON.stringify(data));
-};
-
-// Load form data from localStorage
-const loadFormData = () => {
-    const savedData = localStorage.getItem('sleepTrackerData');
-    if (savedData) {
-        const data = JSON.parse(savedData);
-        Object.keys(data).forEach(key => {
-            const input = form.elements[key];
-            if (input) {
-                if (input.type === 'radio') {
-                    const radio = form.querySelector(`input[name="${key}"][value="${data[key]}"]`);
-                    if (radio) radio.checked = true;
-                } else {
-                    input.value = data[key];
-                }
-            }
-        });
-
-        // Trigger change events to show/hide conditional fields
-        document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
-            radio.dispatchEvent(new Event('change'));
-        });
-    }
-};
-
-// Auto-save on input change
-form.addEventListener('input', saveFormData);
 
 // Set current date automatically
 const setCurrentDate = () => {
@@ -491,9 +475,14 @@ const initializeSelectOptions = () => {
     });
 };
 
-// Load saved data on page load
+// Initialize Application
 window.addEventListener('load', () => {
     initializeSelectOptions();
     setCurrentDate();
-    loadFormData();
+
+    // Explicitly trigger change events on initially selected radios
+    // to ensure conditional fields expand/collapse correctly on fresh load
+    document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+        radio.dispatchEvent(new Event('change'));
+    });
 });
